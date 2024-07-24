@@ -1,28 +1,35 @@
-import { Image, StyleSheet, Platform } from "react-native";
-import React, { useState } from "react";
-import SelectCountryScreen from "@/components/LocDropDown";
+// HomeScreen.tsx
+
+import React, { useContext } from "react";
+import { Image, StyleSheet } from "react-native";
+import { GlobalProvider, UserContext } from "@/contexts/AppContext";
+import SelectCountryScreen from "@/components/CountryDropDown";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import LocationScreen from "@/components/getLocation";
 
 export default function HomeScreen() {
+  const { location } = useContext(UserContext);
+  console.log("loc", location);
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
-      headerImage={
-        <Image
-          source={require("@/assets/images/partial-react-logo.png")}
-          style={styles.reactLogo}
-        />
-      }
-    >
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle" style={styles.heading_1}>
-          Set Your Location
-        </ThemedText>
-        {<SelectCountryScreen />}
-      </ThemedView>
-    </ParallaxScrollView>
+    <GlobalProvider>
+      <ParallaxScrollView
+        headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
+        headerImage={
+          <Image
+            source={require("@/assets/images/partial-react-logo.png")}
+            style={styles.reactLogo}
+          />
+        }
+      >
+        <ThemedView style={styles.stepContainer}>
+          <SelectCountryScreen />
+          <LocationScreen />
+        </ThemedView>
+      </ParallaxScrollView>
+    </GlobalProvider>
   );
 }
 
