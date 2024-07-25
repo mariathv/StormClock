@@ -75,13 +75,24 @@ const LocationDisplay = () => {
     }
   }, [location]);
 
+  function displayCountry() {
+    return (
+      <ThemedText style={styles.countryFont}>
+        {exactLoc?.countryName}
+      </ThemedText>
+    );
+  }
+
   return (
     <>
       <ThemedText type="subtitle" style={styles.heading_1}>
-        {" "}
-        {exactLoc
-          ? `${exactLoc.city}, ${exactLoc.countryName}`
-          : "Your Location is not set yet"}
+        {exactLoc ? (
+          <>
+            {exactLoc.city}, {displayCountry()}
+          </>
+        ) : (
+          ""
+        )}
       </ThemedText>
     </>
   );
@@ -90,6 +101,9 @@ const LocationDisplay = () => {
 export default LocationDisplay;
 
 const styles = StyleSheet.create({
+  countryFont: {
+    fontSize: 12,
+  },
   heading_1: {
     textAlign: "center",
   },

@@ -8,37 +8,41 @@ import LocationDisplay from "@/components/LocationDisplay";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import { View } from "react-native";
 import LocationScreen from "@/components/getLocation";
 import CurrentWeather from "@/components/CurrentWeather";
-
+import DisplayImage from "@/components/WeatherImage";
 export default function HomeScreen() {
   const { location } = useContext(UserContext);
   console.log("loc", location);
 
   return (
     <GlobalProvider>
-      <ParallaxScrollView
-        headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
-        headerImage={
-          <Image
-            source={require("@/assets/images/partial-react-logo.png")}
-            style={styles.reactLogo}
-          />
-        }
-      >
-        <ThemedView style={styles.stepContainer}>
-          <LocationDisplay />
-          <LocationScreen />
-          <CurrentWeather />
-        </ThemedView>
-      </ParallaxScrollView>
+      <View className="relative pt-20">
+        <Image
+          source={require(`../../assets/images/main_bg.jpeg`)}
+          style={styles.bg_format}
+          blurRadius={10}
+        />
+        <LocationDisplay />
+        <LocationScreen />
+        <CurrentWeather />
+        <DisplayImage />
+      </View>
     </GlobalProvider>
   );
 }
 
 const styles = StyleSheet.create({
+  bg_format: {
+    position: "absolute",
+  },
   heading_1: {
     textAlign: "center",
+  },
+  flexContainer: {
+    paddingTop: "20%",
+    position: "relative",
   },
   titleContainer: {
     flexDirection: "row",

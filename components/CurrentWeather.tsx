@@ -6,11 +6,11 @@ import { UserContext } from "@/contexts/AppContext";
 import { ThemedText } from "./ThemedText";
 
 const CurrentWeather = () => {
-  const { exactLocation } = useContext(UserContext);
+  const { exactLocation, setWeatherData } = useContext(UserContext);
   const [currentWeather, setCurrentWeather] = useState<any>();
 
   const getCurrentWeather = async () => {
-    const geocode_url = `${process.env.API_METEO}/forecast?latitude=${exactLocation.latitude}&longitude=${exactLocation.longitude}&current=temperature_2m`;
+    const geocode_url = `${process.env.API_WA}/v1/current.json?key=${process.env.API_KEY_WA}&q=${exactLocation.latitude},${exactLocation.longitude}&aqi=no`;
 
     const data = await fetch(geocode_url);
     if (!data.ok) {
@@ -19,6 +19,8 @@ const CurrentWeather = () => {
 
     const fetched = await data.json();
     setCurrentWeather(fetched);
+    setWeatherData(fetched);
+    console.log(fetched);
   };
 
   useEffect(() => {
@@ -27,7 +29,7 @@ const CurrentWeather = () => {
 
   function displayTemperature() {
     if (!currentWeather) return;
-    return `${currentWeather?.current?.temperature_2m}${currentWeather?.current_units?.temperature_2m}`;
+    return `${currentWeather?.current?.temp_c}°C`;
   }
 
   return (
@@ -43,7 +45,9 @@ export default CurrentWeather;
 
 const styles = StyleSheet.create({
   heading_1: {
+    marginTop: 10,
     textAlign: "center",
+    fontSize: 30,
   },
   dropdown: {
     margin: 16,
