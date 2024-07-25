@@ -22,14 +22,9 @@ const LocationScreen: React.FC = () => {
   }, []);
 
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>
-        Location:{" "}
-        {location
-          ? `${location.latitude}, ${location.longitude}`
-          : "Loading..."}
-      </Text>
-    </View>
+    <View
+      style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+    ></View>
   );
 };
 

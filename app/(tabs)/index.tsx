@@ -4,10 +4,12 @@ import React, { useContext } from "react";
 import { Image, StyleSheet } from "react-native";
 import { GlobalProvider, UserContext } from "@/contexts/AppContext";
 import SelectCountryScreen from "@/components/CountryDropDown";
+import LocationDisplay from "@/components/LocationDisplay";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import LocationScreen from "@/components/getLocation";
+import CurrentWeather from "@/components/CurrentWeather";
 
 export default function HomeScreen() {
   const { location } = useContext(UserContext);
@@ -25,8 +27,9 @@ export default function HomeScreen() {
         }
       >
         <ThemedView style={styles.stepContainer}>
-          <SelectCountryScreen />
+          <LocationDisplay />
           <LocationScreen />
+          <CurrentWeather />
         </ThemedView>
       </ParallaxScrollView>
     </GlobalProvider>

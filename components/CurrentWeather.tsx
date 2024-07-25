@@ -1,0 +1,78 @@
+import React, { useState, useContext, useEffect } from "react";
+import { StyleSheet } from "react-native";
+import { SelectCountry } from "react-native-element-dropdown";
+import { ColorProperties } from "react-native-reanimated/lib/typescript/reanimated2/Colors";
+import { UserContext } from "@/contexts/AppContext";
+import { ThemedText } from "./ThemedText";
+
+const CurrentWeather = () => {
+  const { exactLocation } = useContext(UserContext);
+  const [currentWeather, setCurrentWeather] = useState<any>();
+
+  const getCurrentWeather = async () => {
+    const geocode_url = `${process.env.API_METEO}/forecast?latitude=${exactLocation.latitude}&longitude=${exactLocation.longitude}&current=temperature_2m`;
+
+    const data = await fetch(geocode_url);
+    if (!data.ok) {
+      console.log("failed to fetch geocode weather");
+    }
+
+    const fetched = await data.json();
+    setCurrentWeather(fetched);
+  };
+
+  useEffect(() => {
+    getCurrentWeather();
+  }, [exactLocation]);
+
+  function displayTemperature() {
+    if (!currentWeather) return;
+    return `${currentWeather?.current?.temperature_2m}${currentWeather?.current_units?.temperature_2m}`;
+  }
+
+  return (
+    <>
+      <ThemedText type="subtitle" style={styles.heading_1}>
+        {currentWeather ? displayTemperature() : ""}
+      </ThemedText>
+    </>
+  );
+};
+
+export default CurrentWeather;
+
+const styles = StyleSheet.create({
+  heading_1: {
+    textAlign: "center",
+  },
+  dropdown: {
+    margin: 16,
+    height: 50,
+    borderBottomColor: "gray",
+    borderBottomWidth: 0.5,
+    backgroundColor: "white",
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "black",
+  },
+  imageStyle: {
+    width: 24,
+    height: 24,
+  },
+  placeholderStyle: {
+    fontSize: 16,
+    color: "white",
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+    marginLeft: 8,
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
+  },
+  inputSearchStyle: {
+    height: 40,
+    fontSize: 16,
+  },
+});
