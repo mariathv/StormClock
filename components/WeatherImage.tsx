@@ -1,10 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
-import { StyleSheet } from "react-native";
-import { Text } from "react-native";
-import { SelectCountry } from "react-native-element-dropdown";
-import { ColorProperties } from "react-native-reanimated/lib/typescript/reanimated2/Colors";
+import { Text, View, Image } from "react-native";
 import { UserContext } from "@/contexts/AppContext";
-import { ThemedText } from "./ThemedText";
+import { weatherImages } from "@/constants/Images.js";
 
 const DisplayImage = () => {
   const { weatherData } = useContext(UserContext);
@@ -15,9 +12,24 @@ const DisplayImage = () => {
   return (
     <>
       {weatherData ? (
-        <Text className="text-white">
-          {weatherData?.current?.condition?.text}
-        </Text>
+        <>
+          <View className="flex-row justify-center">
+            <Image
+              source={
+                weatherImages[
+                  weatherData?.current?.condition
+                    ?.text as keyof typeof weatherImages
+                ]
+              }
+              className="w-52 h-52"
+            ></Image>
+          </View>
+          <View className="flex-row justify-center">
+            <Text className="text-white font-bold">
+              {weatherData?.current?.condition?.text}
+            </Text>
+          </View>
+        </>
       ) : (
         <></>
       )}

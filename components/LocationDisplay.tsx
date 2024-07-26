@@ -4,6 +4,7 @@ import { SelectCountry } from "react-native-element-dropdown";
 import { ColorProperties } from "react-native-reanimated/lib/typescript/reanimated2/Colors";
 import { UserContext } from "@/contexts/AppContext";
 import { ThemedText } from "./ThemedText";
+import { Text } from "react-native";
 
 const local_data = [
   {
@@ -51,11 +52,10 @@ const LocationDisplay = () => {
   //console.log("exact location: ", exactLoc);
 
   const getExactLocation = async () => {
-    if (!location) return;
     const longitude = location?.longitude;
     const latitude = location?.latitude;
 
-    const api_bigdata = `${process.env.API_BD}/reverse-geocode?latitude=${latitude}&longitude=${longitude}&localityLanguage=en&key=${process.env.API_KEY_BD}`;
+    const api_bigdata = `${process.env.EXPO_PUBLIC_API_BD}/reverse-geocode?latitude=${latitude}&longitude=${longitude}&localityLanguage=en&key=${process.env.EXPO_PUBLIC_API_KEY_BD}`;
 
     const data = await fetch(api_bigdata);
 
@@ -75,25 +75,21 @@ const LocationDisplay = () => {
     }
   }, [location]);
 
-  function displayCountry() {
-    return (
-      <ThemedText style={styles.countryFont}>
-        {exactLoc?.countryName}
-      </ThemedText>
-    );
-  }
-
   return (
     <>
-      <ThemedText type="subtitle" style={styles.heading_1}>
+      <Text className="text-white text-center text-2xl font-bold pt-20">
         {exactLoc ? (
           <>
-            {exactLoc.city}, {displayCountry()}
+            {exactLoc.city},{" "}
+            <Text className="text-lg font-semibold">
+              {" "}
+              {exactLoc.countryName}
+            </Text>
           </>
         ) : (
           ""
         )}
-      </ThemedText>
+      </Text>
     </>
   );
 };

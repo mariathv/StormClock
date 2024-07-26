@@ -3,14 +3,14 @@ import { StyleSheet } from "react-native";
 import { SelectCountry } from "react-native-element-dropdown";
 import { ColorProperties } from "react-native-reanimated/lib/typescript/reanimated2/Colors";
 import { UserContext } from "@/contexts/AppContext";
-import { ThemedText } from "./ThemedText";
+import { Text } from "react-native";
 
 const CurrentWeather = () => {
   const { exactLocation, setWeatherData } = useContext(UserContext);
   const [currentWeather, setCurrentWeather] = useState<any>();
 
   const getCurrentWeather = async () => {
-    const geocode_url = `${process.env.API_WA}/v1/current.json?key=${process.env.API_KEY_WA}&q=${exactLocation.latitude},${exactLocation.longitude}&aqi=no`;
+    const geocode_url = `${process.env.EXPO_PUBLIC_API_WA}/v1/current.json?key=${process.env.EXPO_PUBLIC_API_KEY_WA}&q=${exactLocation.latitude},${exactLocation.longitude}&aqi=no`;
 
     const data = await fetch(geocode_url);
     if (!data.ok) {
@@ -34,9 +34,9 @@ const CurrentWeather = () => {
 
   return (
     <>
-      <ThemedText type="subtitle" style={styles.heading_1}>
+      <Text className="text-white text-center text-3xl text-bold">
         {currentWeather ? displayTemperature() : ""}
-      </ThemedText>
+      </Text>
     </>
   );
 };

@@ -12,6 +12,8 @@ interface AppContextType {
   setExactLocation: React.Dispatch<React.SetStateAction<any>>;
   weatherData: any;
   setWeatherData: React.Dispatch<React.SetStateAction<any>>;
+  forecastData: any;
+  setForecastData: React.Dispatch<React.SetStateAction<any>>;
 }
 
 export const UserContext = createContext<AppContextType>({
@@ -21,6 +23,8 @@ export const UserContext = createContext<AppContextType>({
   setExactLocation: () => {},
   weatherData: null,
   setWeatherData: () => {},
+  forecastData: null,
+  setForecastData: () => {},
 });
 
 interface GlobalProviderProps {
@@ -31,7 +35,7 @@ export const GlobalProvider: React.FC<GlobalProviderProps> = ({ children }) => {
   const [location, setLocation] = useState<LocationData | null>(null);
   const [exactLocation, setExactLocation] = useState<any>();
   const [weatherData, setWeatherData] = useState<any>();
-
+  const [forecastData, setForecastData] = useState<any>();
   return (
     <UserContext.Provider
       value={{
@@ -41,6 +45,8 @@ export const GlobalProvider: React.FC<GlobalProviderProps> = ({ children }) => {
         setExactLocation,
         weatherData,
         setWeatherData,
+        forecastData,
+        setForecastData,
       }}
     >
       {children}
