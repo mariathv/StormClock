@@ -1,4 +1,6 @@
-import React, { createContext, useState, ReactNode } from "react";
+import React, { createContext, useState, ReactNode, useEffect } from "react";
+import { useFetchData } from "@/hooks/useFetchData";
+import { Alert, BackHandler, Linking } from "react-native";
 
 interface LocationData {
   latitude: number;
@@ -6,25 +8,17 @@ interface LocationData {
 }
 
 interface AppContextType {
-  location: LocationData | null;
-  setLocation: React.Dispatch<React.SetStateAction<LocationData | null>>;
+  location: any;
   exactLocation: any;
-  setExactLocation: React.Dispatch<React.SetStateAction<any>>;
   weatherData: any;
-  setWeatherData: React.Dispatch<React.SetStateAction<any>>;
   forecastData: any;
-  setForecastData: React.Dispatch<React.SetStateAction<any>>;
 }
 
 export const UserContext = createContext<AppContextType>({
   location: null,
-  setLocation: () => {},
   exactLocation: null,
-  setExactLocation: () => {},
   weatherData: null,
-  setWeatherData: () => {},
   forecastData: null,
-  setForecastData: () => {},
 });
 
 interface GlobalProviderProps {
@@ -32,21 +26,15 @@ interface GlobalProviderProps {
 }
 
 export const GlobalProvider: React.FC<GlobalProviderProps> = ({ children }) => {
-  const [location, setLocation] = useState<LocationData | null>(null);
-  const [exactLocation, setExactLocation] = useState<any>();
-  const [weatherData, setWeatherData] = useState<any>();
-  const [forecastData, setForecastData] = useState<any>();
+  const { location, exactLocation, weatherData, forecastData } = useFetchData();
+
   return (
     <UserContext.Provider
       value={{
         location,
-        setLocation,
         exactLocation,
-        setExactLocation,
         weatherData,
-        setWeatherData,
         forecastData,
-        setForecastData,
       }}
     >
       {children}

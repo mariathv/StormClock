@@ -3,52 +3,43 @@ import { View, Text, Image, StyleSheet } from "react-native";
 import { UserContext } from "@/contexts/AppContext";
 import { icons } from "@/constants/Images";
 const Weathernow = () => {
-  const [forecast, setForecast] = useState<any>();
-  const { exactLocation, setForecastData } = useContext(UserContext);
+  const { weatherData, forecastData } = useContext(UserContext);
 
-  const getForecast = async () => {
-    const api_url = `${process.env.EXPO_PUBLIC_API_WA}/v1/forecast.json?key=${process.env.EXPO_PUBLIC_API_KEY_WA}&&q=${exactLocation.latitude},${exactLocation.longitude}&days=7&aqi=no&alerts=no`;
-
-    console.log(
-      `${process.env.EXPO_PUBLIC_API_WA}/v1/forecast.json?key=${process.env.EXPO_PUBLIC_API_KEY_WA}&&q=${exactLocation.latitude},${exactLocation.longitude}&days=7&aqi=no&alerts=no`
-    );
-
-    const data = await fetch(api_url);
-    if (!data.ok) console.log("failed to fetch forecast data");
-    const fetched = await data.json();
-    setForecast(fetched);
-    setForecastData(fetched);
-  };
-
-  useEffect(() => {
-    getForecast();
-  }, [exactLocation]);
   return (
     <>
       <View
         className="flex-row justify-between items-center rounded-3xl py-3 m-4 px-5"
         style={styles.containerStyle}
       >
-        <View className="flex-row space-x-3 items-center">
+        <View className="flex-row space-x-1 items-center">
           <Image
             source={icons["wind" as keyof typeof icons]}
-            className="h-6 w-6"
+            className="h-5 w-5"
           />
-          <Text className="color-white text-base"> 22km</Text>
+          <Text className="color-white text-sm">
+            {" "}
+            {weatherData.current.wind_kph}{" "}
+            <Text className="text-custom-xs">km/h</Text>
+          </Text>
         </View>
         <View className="flex-row space-x-2 items-center">
           <Image
             source={icons["sun" as keyof typeof icons]}
-            className="h-6 w-6"
+            className="h-5 w-5"
           />
-          <Text className="color-white text-base">6:05AM</Text>
+          <Text className="color-white text-sm">
+            {forecastData.forecast.forecastday[0].astro.sunrise}
+          </Text>
         </View>
-        <View className="flex-row space-x-2 items-center">
+        <View className="flex-row space-x-1 items-center">
           <Image
             source={icons["drop" as keyof typeof icons]}
-            className="h-6 w-6"
+            className="h-5 w-5"
           />
-          <Text className="color-white text-base"> 15%</Text>
+          <Text className="color-white text-sm">
+            {" "}
+            {weatherData.current.humidity}%
+          </Text>
         </View>
       </View>
     </>

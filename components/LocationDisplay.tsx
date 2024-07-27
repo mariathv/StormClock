@@ -47,7 +47,7 @@ const local_data = [
 const LocationDisplay = () => {
   const [country, setCountry] = useState("1");
   const [exactLoc, setexactLoc] = useState<any>();
-  const { location, setExactLocation } = useContext(UserContext);
+  const { location, exactLocation } = useContext(UserContext);
 
   //console.log("exact location: ", exactLoc);
 
@@ -66,24 +66,24 @@ const LocationDisplay = () => {
 
     const fetched = await data.json();
     setexactLoc(fetched);
-    setExactLocation(fetched);
+    //setExactLocation(fetched);
   };
 
-  useEffect(() => {
-    if (location) {
-      getExactLocation();
-    }
-  }, [location]);
+  // useEffect(() => {
+  //   if (location) {
+  //     getExactLocation();
+  //   }
+  // }, [location]);
 
   return (
     <>
       <Text className="text-white text-center text-2xl font-bold pt-20">
-        {exactLoc ? (
+        {exactLocation ? (
           <>
-            {exactLoc.city},{" "}
+            {exactLocation.city},{" "}
             <Text className="text-lg font-semibold">
               {" "}
-              {exactLoc.countryName}
+              {exactLocation.countryName}
             </Text>
           </>
         ) : (
