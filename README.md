@@ -1,6 +1,6 @@
-## StormClock
-[download](https://github.com/mariathv/StormClock/releases/download/v0.1/StormClock.apk)
+# StormClock
+## [`Download`](https://github.com/IdreesInc/Monocraft/releases)
 
 <div align="center">
-	<img src="https://ibb.co/n0hM5f6">
+	<img src="https://i.ibb.co/kyY2W05/s1.png">
 </div>
