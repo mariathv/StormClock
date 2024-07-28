@@ -12,6 +12,7 @@ interface AppContextType {
   exactLocation: any;
   weatherData: any;
   forecastData: any;
+  error: any;
 }
 
 export const UserContext = createContext<AppContextType>({
@@ -19,6 +20,7 @@ export const UserContext = createContext<AppContextType>({
   exactLocation: null,
   weatherData: null,
   forecastData: null,
+  error: null,
 });
 
 interface GlobalProviderProps {
@@ -26,7 +28,8 @@ interface GlobalProviderProps {
 }
 
 export const GlobalProvider: React.FC<GlobalProviderProps> = ({ children }) => {
-  const { location, exactLocation, weatherData, forecastData } = useFetchData();
+  const { location, exactLocation, weatherData, forecastData, error } =
+    useFetchData();
 
   return (
     <UserContext.Provider
@@ -35,6 +38,7 @@ export const GlobalProvider: React.FC<GlobalProviderProps> = ({ children }) => {
         exactLocation,
         weatherData,
         forecastData,
+        error,
       }}
     >
       {children}

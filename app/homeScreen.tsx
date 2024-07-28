@@ -7,10 +7,10 @@ import DailyForecast from "@/components/DailyForecast";
 import HourlyForecast from "@/components/HourlyForecast";
 import { UserContext } from "@/contexts/AppContext";
 import Splash from "@/components/SplashScreen";
-import { View, ScrollView, Image } from "react-native";
+import { View, ScrollView, Image, Text } from "react-native";
 
 export default function MainHomeScreen() {
-  const { location, exactLocation, weatherData, forecastData } =
+  const { location, exactLocation, weatherData, forecastData, error } =
     useContext(UserContext);
 
   const [allFetched, setallFetched] = useState(false);

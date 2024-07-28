@@ -1,4 +1,3 @@
-// src/hooks/useGetPermissionLocation.ts
 import { useState, useEffect } from "react";
 import * as Location from "expo-location";
 import { Alert, Linking, BackHandler } from "react-native";
@@ -11,8 +10,7 @@ interface LocationData {
 export const useGetPermissionLocation = () => {
   const [location, setLocation] = useState<LocationData | null>(null);
   const [permissionStatus, setPermissionStatus] = useState<string | null>(null);
-  const [fetchingLocation, setFetchingLocation] = useState<boolean>(false); // Add fetching state
-
+  const [fetchingLocation, setFetchingLocation] = useState<boolean>(false);
   const getPermissions = async () => {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();

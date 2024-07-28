@@ -18,7 +18,7 @@ const Weathernow = () => {
           />
           <Text className="color-white text-sm">
             {" "}
-            {weatherData.current.wind_kph}{" "}
+            {weatherData?.current?.wind_kph}{" "}
             <Text className="text-custom-xs">km/h</Text>
           </Text>
         </View>
@@ -28,7 +28,7 @@ const Weathernow = () => {
             className="h-5 w-5"
           />
           <Text className="color-white text-sm">
-            {forecastData.forecast.forecastday[0].astro.sunrise}
+            {forecastData?.forecast?.forecastday[0].astro.sunrise}
           </Text>
         </View>
         <View className="flex-row space-x-1 items-center">
@@ -38,7 +38,7 @@ const Weathernow = () => {
           />
           <Text className="color-white text-sm">
             {" "}
-            {weatherData.current.humidity}%
+            {weatherData?.current?.humidity}%
           </Text>
         </View>
       </View>

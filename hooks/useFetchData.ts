@@ -1,65 +1,95 @@
 import { useState, useEffect } from "react";
 import { useGetPermissionLocation } from "./useGetPermissionLocation";
-import * as Location from "expo-location";
 import { Alert, Linking, BackHandler } from "react-native";
-import CurrentWeather from "@/components/CurrentWeather";
 
 interface LocationData {
   latitude: number;
   longitude: number;
 }
+
+const MAX_RETRIES = 3;
+const RETRY_DELAY_MS = 1000;
+
 export const useFetchData = () => {
   const { location, setLocation, permissionStatus, fetchingLocation } =
     useGetPermissionLocation();
+  const [error, setError] = useState<string>("");
   const [exactLocation, setExactLocation] = useState<any>();
   const [weatherData, setWeatherData] = useState<any>();
   const [forecastData, setForecastData] = useState<any>();
 
-  const getExactLocation = async () => {
-    const longitude = location?.longitude;
-    const latitude = location?.latitude;
-
-    const api_bigdata = `${process.env.EXPO_PUBLIC_API_BD}/reverse-geocode?latitude=${latitude}&longitude=${longitude}&localityLanguage=en&key=${process.env.EXPO_PUBLIC_API_KEY_BD}`;
-
-    const data = await fetch(api_bigdata);
-
-    if (!data.ok) {
-      console.log("failed to fetch location::", process.env.EXPO_PUBLIC_API_BD);
-      return;
+  const fetchWithRetries = async (
+    url: string,
+    maxRetries: number = MAX_RETRIES
+  ) => {
+    let attempts = 0;
+    while (attempts < maxRetries) {
+      try {
+        const response = await fetch(url);
+        if (!response.ok)
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        return await response.json();
+      } catch (error) {
+        attempts++;
+        if (attempts >= maxRetries) throw error;
+        await new Promise((res) => setTimeout(res, RETRY_DELAY_MS)); // Wait before retrying
+      }
     }
+  };
 
-    const fetched = await data.json();
-    setExactLocation(fetched);
-    console.log("Exact Location: ", fetched);
-    getCurrentWeather(fetched);
+  const getExactLocation = async () => {
+    if (!location?.longitude || !location?.latitude) return;
+
+    const api_bigdata = `${process.env.EXPO_PUBLIC_API_BD}/reverse-geocode?latitude=${location.latitude}&longitude=${location.longitude}&localityLanguage=en&key=${process.env.EXPO_PUBLIC_API_KEY_BD}`;
+
+    setError("Fetching Exact Location...");
+
+    try {
+      const fetched = await fetchWithRetries(api_bigdata);
+      setExactLocation(fetched);
+      console.log("Exact Location: ", fetched);
+
+      if (!weatherData) await getCurrentWeather(fetched);
+      if (!forecastData) await getForecast(fetched);
+    } catch (error) {
+      setError("Failed to fetch exact location.");
+      console.error(error);
+    }
   };
 
   const getCurrentWeather = async (loc: any) => {
     const geocode_url = `${process.env.EXPO_PUBLIC_API_WA}/v1/current.json?key=${process.env.EXPO_PUBLIC_API_KEY_WA}&q=${loc.latitude},${loc.longitude}&aqi=no`;
-    console.log("fetching current weather", geocode_url);
 
-    const data = await fetch(geocode_url);
-    if (!data.ok) {
-      console.log(
-        "failed to fetch geocode weather,",
-        `${process.env.EXPO_PUBLIC_API_WA}/v1/current.json?key=${process.env.EXPO_PUBLIC_API_KEY_WA}&q=${exactLocation.latitude},${exactLocation.longitude}&aqi=no`
-      );
+    setError("Fetching Weather...");
+
+    try {
+      const fetched = await fetchWithRetries(geocode_url);
+      setWeatherData(fetched);
+      setError(`Weather data fetched: ${fetched.current.wind_kph}`);
+    } catch (error: any) {
+      const errorMessage = `Failed to fetch forecast data. Forecast Data: ${JSON.stringify(
+        forecastData
+      )} Error: ${error.message}`;
+      setError("Failed to fetch weather data." + geocode_url + errorMessage);
+      console.error(error);
     }
-
-    const fetched = await data.json();
-    setWeatherData(fetched);
-    console.log("Weather Data: ", fetched);
-    getForecast(loc);
   };
 
   const getForecast = async (loc: any) => {
-    const api_url = `${process.env.EXPO_PUBLIC_API_WA}/v1/forecast.json?key=${process.env.EXPO_PUBLIC_API_KEY_WA}&&q=${loc.latitude},${loc.longitude}&days=7&aqi=no&alerts=no`;
+    const api_url = `${process.env.EXPO_PUBLIC_API_WA}/v1/forecast.json?key=${process.env.EXPO_PUBLIC_API_KEY_WA}&q=${loc.latitude},${loc.longitude}&days=7&aqi=no&alerts=no`;
 
-    const data = await fetch(api_url);
-    if (!data.ok) console.log("failed to fetch forecast data");
-    const fetched = await data.json();
-    setForecastData(fetched);
-    console.log("Weather Forecast: ", fetched);
+    setError("Fetching Forecast...");
+
+    try {
+      const fetched = await fetchWithRetries(api_url);
+      setForecastData(fetched);
+    } catch (error: any) {
+      const errorMessage = `Failed to fetch forecast data. Forecast Data: ${JSON.stringify(
+        forecastData
+      )} Error: ${error.message}`;
+      setError("Failed to fetch forecast data." + api_url + errorMessage);
+      console.error(error);
+    }
   };
 
   useEffect(() => {
@@ -82,11 +112,14 @@ export const useFetchData = () => {
         ]
       );
     }
-  }, [location, permissionStatus, fetchingLocation]);
+  }, [permissionStatus]);
 
   useEffect(() => {
-    getExactLocation();
+    const fetchData = async () => {
+      if (location) await getExactLocation();
+    };
+    fetchData();
   }, [location]);
 
-  return { location, exactLocation, weatherData, forecastData };
+  return { location, exactLocation, weatherData, forecastData, error };
 };
